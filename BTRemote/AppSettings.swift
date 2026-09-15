@@ -20,8 +20,8 @@ enum AppSettings {
         return saved.flatMap { $0.isEmpty ? nil : $0 } ?? L10n.Bluetooth.advertisedName
     }
 
-    static let repoURL = URL(string: "https://github.com/jqssun/darwin-bt-remote")!
-    static let instructionsURL = URL(string: "https://github.com/jqssun/darwin-bt-remote/blob/main/README.md")!
+    static let repoURL = URL(string: "https://github.com/peladam/darwin-bt-remote")!
+    static let instructionsURL = URL(string: "https://github.com/peladam/darwin-bt-remote/blob/main/README.md")!
 
     static let defaultPointerSensitivity = 5.0
     static let pointerSensitivityRange = 0.5 ... 10.0
