@@ -1668,7 +1668,7 @@
         "en": {
           "stringUnit": {
             "state": "translated",
-            "value": "The name other devices see. For best compatibility, keep it to 8 characters or fewer."
+            "value": "The name other devices see. For best compatibility, keep it to 8 characters or fewer. Remove the old Bluetooth pairing and pair again after changing it."
           }
         }
       }

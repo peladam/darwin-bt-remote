@@ -64,8 +64,8 @@
                 "0102 - ProviderName": providerName,
 
                 "0201 - HIDParserVersion": _uint(value: 0x0111, byteCount: 2),
-                // HIDDeviceSubclass 0xC0: combo keyboard + pointing device
-                "0202 - HIDDeviceSubclass": _uint(value: 0xC0, byteCount: 1),
+                // HIDDeviceSubclass 0x40: keyboard. The report map still includes a mouse.
+                "0202 - HIDDeviceSubclass": _uint(value: 0x40, byteCount: 1),
                 // HIDCountryCode 0x21: US
                 "0203 - HIDCountryCode": _uint(value: 0x21, byteCount: 1),
                 "0204 - HIDVirtualCable": true,

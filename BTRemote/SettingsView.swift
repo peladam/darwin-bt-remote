@@ -3,6 +3,9 @@ import SwiftUI
 struct SettingsView: View {
     @EnvironmentObject private var lowEnergy: HIDPeripheral
     @EnvironmentObject private var names: DeviceNameStore
+    #if os(macOS)
+        @EnvironmentObject private var classic: HIDClassicDevice
+    #endif
     @Environment(\.hid) private var hid
     @State private var showReset = false
     @AppStorage(AppSettings.touchpadSensitivityKey) private var touchpadSensitivity = AppSettings.defaultPointerSensitivity
@@ -10,6 +13,7 @@ struct SettingsView: View {
     @AppStorage(AppSettings.developerModeKey) private var developerMode = false
     @AppStorage(AppSettings.useServiceChangedKey) private var forceServiceChanged = true
     @AppStorage(AppSettings.hasSeenWelcomeKey) private var hasSeenWelcome = false
+    @AppStorage(AppSettings.advertisedNameKey) private var advertisedName = L10n.Bluetooth.advertisedName
     #if os(iOS)
         @AppStorage(AppSettings.autoAdvertiseKey) private var autoAdvertise = true
     #endif
@@ -35,6 +39,7 @@ struct SettingsView: View {
                 sensitivityRow(L10n.Settings.trackingSpeed, value: $touchpadSensitivity, range: AppSettings.pointerSensitivityRange)
                 sensitivityRow(L10n.Settings.scrollSpeed, value: $scrollSensitivity, range: AppSettings.scrollSensitivityRange)
             }
+            advertisedNameSection
             #if os(iOS)
                 Section(header: Text(L10n.Settings.connection), footer: Text(L10n.Settings.autoAdvertiseHint)) {
                     Toggle(L10n.Settings.autoAdvertise, isOn: $autoAdvertise)
@@ -56,6 +61,40 @@ struct SettingsView: View {
         .confirmationDialog(L10n.Settings.resetConfirm, isPresented: $showReset, titleVisibility: .visible) {
             Button(L10n.Settings.reset, role: .destructive) { _resetAll() }
         }
+    }
+
+    private var advertisedNameSection: some View {
+        Section(footer: Text(L10n.Setup.advertisedNameHint)) {
+            NavigationLink {
+                NameEditView(
+                    title: L10n.Setup.advertisedName,
+                    footer: L10n.Setup.advertisedNameHint,
+                    maxLength: AppSettings.maxAdvertisedNameLength,
+                    name: $advertisedName,
+                    onCommit: _applyAdvertisedName
+                )
+            } label: {
+                HStack {
+                    Text(L10n.Setup.advertisedName)
+                    Spacer()
+                    Text(verbatim: advertisedName).foregroundColor(.secondary)
+                }
+            }
+        }
+    }
+
+    private func _applyAdvertisedName() {
+        if advertisedName.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty {
+            advertisedName = L10n.Bluetooth.advertisedName
+        }
+        lowEnergy.advertiseLocalName = advertisedName
+        if lowEnergy.isAdvertising {
+            lowEnergy.stop()
+            lowEnergy.start()
+        }
+        #if os(macOS)
+            classic.applyAdvertisedName()
+        #endif
     }
 
     private var resetSection: some View {

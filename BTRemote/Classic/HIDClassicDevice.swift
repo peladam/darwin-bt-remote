@@ -58,7 +58,7 @@
             guard serviceRecord == nil else { return }
             let dict = SDPRecord.buildHID(
                 reportDescriptor: HIDProfile.reportMapData,
-                name: L10n.Bluetooth.advertisedName,
+                name: AppSettings.advertisedName,
                 serviceDescription: L10n.Bluetooth.serviceDescription,
                 providerName: L10n.Bluetooth.providerName
             )
@@ -72,6 +72,12 @@
             var handle: BluetoothSDPServiceRecordHandle = 0
             _ = record.getHandle(&handle)
             log.info("SDP service published; handle=\(handle, privacy: .public)")
+        }
+
+        func applyAdvertisedName() {
+            guard serviceRecord != nil else { return }
+            unpublishService()
+            publishService()
         }
 
         func unpublishService() {

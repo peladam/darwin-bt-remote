@@ -14,6 +14,12 @@ enum AppSettings {
 
     static let maxAdvertisedNameLength = 26
 
+    static var advertisedName: String {
+        let saved = UserDefaults.standard.string(forKey: advertisedNameKey)?
+            .trimmingCharacters(in: .whitespacesAndNewlines)
+        return saved.flatMap { $0.isEmpty ? nil : $0 } ?? L10n.Bluetooth.advertisedName
+    }
+
     static let repoURL = URL(string: "https://github.com/jqssun/darwin-bt-remote")!
     static let instructionsURL = URL(string: "https://github.com/jqssun/darwin-bt-remote/blob/main/README.md")!
 
